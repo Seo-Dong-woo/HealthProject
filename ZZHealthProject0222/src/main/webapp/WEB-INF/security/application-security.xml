@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/security/oauth2 https://www.springframework.org/schema/security/spring-security-oauth2.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+<!-- security 클론 없앨려고 beans 좀 수정 -->  <!-- 5.0 버전 안지우면 에러남 , 컨텍스트도 빈즈도 뒤에버전 지우기-->
+	<context:component-scan base-package="com.sist.*"/>
+	<!--  페이지별 접근 권환 -->
+	<http auto-config="true" use-expressions="true">
+	  <csrf disabled="true"/> <!--  해킹 처리 : 사이트 위조 (파밍) -->
+	  <!-- 
+	  	http://localhost/web/member/login.do
+	  	permitAll : 누구나 사용이 가능
+	  	hasRole('ROLE_ADMIN') => 한개만 적용
+	  	hasRole('ROLE_ADMIN','ROLE_USER')
+	   -->
+	  <intercept-url pattern="/member/**" access="permitAll"/>
+	  <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+	  <intercept-url pattern="/user/**" access="hasRole('ROLE_USER')"/>
+	  <intercept-url pattern="/**" access="permitAll"/>
+	  <intercept-url pattern="/member/login.do" access="permitAll"/>
+	  
+	  
+	  <!--  session관리 해줌 : Principal
+	  	    Principal => UserDetails => username,authority
+	  	    							= id
+	  	    public class CustomUserDetails extends UserDetails
+	  	    {
+	  	    	private String username,id,password.....
+	  	    }
+	  	    <input type=text name="j_id">
+	  	    <input type=password name="pwd">
+	  	    
+	  	    => String id=request.getParameter("id");
+	  	       		  username
+	  	       String pwd=request.getParameter("pwd");
+	  	       		  password
+	  	       		  
+	  	     @GetMapping("memeber/login.do")
+	  	     public String login(String id,String pwd)
+	  	     {
+	  	     	...
+	  	     	,,,
+	  	     	return "redirect:../main/main.do";
+	  	     }
+	   -->
+	  <form-login login-page="/member/login.do"
+	  	login-processing-url="/member/login.do"
+	  	username-parameter="id"
+	  	password-parameter="pwd"
+	  	default-target-url="/main/main.do"
+	  	always-use-default-target="false"
+	  	authentication-success-handler-ref="loginSuccessHandler"
+	  	authentication-failure-handler-ref="loginFailureHandler"
+	  />
+	   
+	  <!-- 
+	  	@GetMapping("member/logout.do")
+	  	public String logout(HttpSession session)
+	  	{
+	  		session.invalidate()
+	  		return "redirect:../main/main.do";
+	  	}
+	   -->
+	  <remember-me data-source-ref="ds" token-validity-seconds="86400"/>
+	  <logout logout-url="/member/logout.do"
+	    invalidate-session="true"
+	    logout-success-url="/main/main.do"
+	    delete-cookies="remember-me,JSESSIONID"
+	  />
+	  
+	</http>
+	<beans:bean id="loginSuccessHandler" class="com.sist.security.LoginSuccessHandler">
+	  <beans:property name="defaultUrl" value="/main/main.do"/>
+	</beans:bean>
+	<beans:bean id="loginFailureHandler" class="com.sist.security.LoginFailHandler">
+	  <beans:property name="defaultFailureUrl" value="/member/login.do?login_error"/>
+	</beans:bean>
+	<!--  remember-me : 자동 로그인 처리 -->
+	<!--  데이터베이스 연동 -->
+	<jdbc-user-service data-source-ref="ds"
+	  id="userService"
+	  users-by-username-query="SELECT userId as username,userPwd as password,enabled FROM hhfinalMember WHERE userId=?"
+	  authorities-by-username-query="SELECT userId as username,authority FROM hhfinalAuthority WHERE userId=?"
+	/>
+	<!--  인증 관리자로 전송 -->
+	<authentication-manager>
+	  <authentication-provider user-service-ref="userService">
+	    <password-encoder ref="bcryptEncoder"/>
+	  </authentication-provider>
+	</authentication-manager>
+	<beans:bean id="bcryptEncoder"
+	   class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"
+	></beans:bean> <!-- 암호화  복호화-->
+</beans:beans>
+
+
+
+
+
+
+
+
+
+
+
