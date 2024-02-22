@@ -65,6 +65,7 @@ a.link:hover,img.img_click:hover{
     	</div>
     	<div style="height: 20px"></div>
     	<table class="table">
+    		<h2>리뷰 쓰기</h2>
      		<tr>
       			<td>
         			<table class="table" v-for="rvo in reply_list">
