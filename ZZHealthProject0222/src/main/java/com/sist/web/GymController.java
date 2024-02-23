@@ -16,7 +16,13 @@ public class GymController {
 	{
 		return "gym/gym_find";
 	}
-	
+	//////////////////////////
+	@GetMapping("gym/gym_list_detail_reserve.do")
+	public String gym_list_detail_reserve()
+	{
+		return "gym/gym_list_detail_reserve";
+	}
+	////////////////////////////
 	@GetMapping("gym/gym_list.do")
 	public String gym_list()
 	{
