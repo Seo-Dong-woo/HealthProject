@@ -180,11 +180,12 @@
                         <li><a href="./shop.html">예약</a>
                         	<ul class="dropdown">
                                 <li><a href="#">회원권</a></li>
-                                <li><a href="#">스포츠센터 예약</a></li>
                                 <li><a href="../gym/gym_list.do">헬스장 목록</a></li>
                                 <sec:authorize access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')">
                                 	<li><a href="../gym/gym_find.do">헬스장 찾기</a></li>
                                 	<li><a href="../freeboard/list.do">자유게시판</a></li>
+                                	<li><a href="../reserve/reserve_main.do">헬스장 상담 예약</a></li>
+                                	<li><a href="../databoard/list.do">첨부파일 게시판</a></li>
                                 </sec:authorize>
                             </ul>
                         </li>
@@ -213,6 +214,12 @@
                                 <li><a href="./login.html">Login</a></li>
                             </ul>
                         </li>
+                        <sec:authorize access="hasRole('ROLE_USER')"> 
+        					<li><a href="../mypage/mypage.do">마이페이지</a></li>
+      					</sec:authorize>
+      					<sec:authorize access="hasRole('ROLE_ADMIN')"> 
+        					<li><a href="../adminpage/admin.do">관리자페이지</a></li>
+      					</sec:authorize>
                     </ul>
                 </nav>
                 <div id="mobile-menu-wrap"></div>

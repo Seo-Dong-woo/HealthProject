@@ -96,7 +96,7 @@ public class MailManager {
 		         }
 		      }catch(Exception ex) {}
 			String host="smtp.naver.com";
-			String user="dpfflapsxj1@naver.com";
+			String user="tjehddn456@naver.com";
 			String password=temp;
 			Properties props=new Properties();
 			props.put("mail.smtp.host", host);
@@ -147,13 +147,13 @@ public class MailManager {
 				message.setFrom(new InternetAddress(user)); //보내는사람
 				message.setSubject("회원을 축하합니다!");
 				message.setContent(html,"text/html;charset=UTF-8");
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress("dpfflapsxj1@naver.com"));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress("tjehddn456@naver.com"));
 				//누구한테 보낼건지
 				
 
 				Transport.send(message);
 				System.out.println("메일전송 완료!!");
-			}catch(Exception ex) {}
+			}catch(Exception ex) {ex.printStackTrace();}
 	}
 	public void mailReserveSender()
 	{

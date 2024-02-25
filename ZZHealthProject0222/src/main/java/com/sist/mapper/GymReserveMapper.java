@@ -14,7 +14,7 @@ import com.sist.vo.*;
 import lombok.EqualsAndHashCode;
 
 public interface GymReserveMapper {
-	@Select("SELECT gno, poster, name "
+	@Select("SELECT no, poster, title "
 			+ "FROM gym "
 			+ "WHERE address LIKE '%'||#{address}||'%'")
 	public List<GymVO> gymReserveData(String address); // 한식 중식 양식 일식
@@ -24,13 +24,13 @@ public interface GymReserveMapper {
 	public void gymReserveInsert(GymReserveVO vo);
 	
 	@Results({
-		@Result(column = "name", property = "gvo.name"),
+		@Result(column = "title", property = "gvo.title"),
 		@Result(column = "poster", property = "gvo.poster")
 	})
-	@Select("SELECT rno, gr.gno, name, poster, rDate, rTime, "
+	@Select("SELECT rno, gr.gno, title, poster, rDate, rTime, "
 			+ "reserve_ok, TO_CHAR(regdate, 'YYYY-MM-DD HH24:MI:SS') as dbday "
 			+ "FROM gymReserve gr, gym g "
-			+ "WHERE gr.gno=g.gno "
+			+ "WHERE gr.gno=g.no "
 			+ "AND userId=#{userId} "
 			+ "ORDER BY rno DESC")
 	public List<GymReserveVO> gymReserveMypageData(String userId);
@@ -40,13 +40,13 @@ public interface GymReserveMapper {
 	public void GymreserveCancel(int rno);
 	
 	@Results({
-		@Result(column = "name", property = "gvo.name"),
+		@Result(column = "title", property = "gvo.title"),
 		@Result(column = "poster", property = "gvo.poster")
 	})
-	@Select("SELECT rno, gr.gno, name, poster, rDate, rTime, "
+	@Select("SELECT rno, gr.gno, title, poster, rDate, rTime, "
 			+ "reserve_ok, TO_CHAR(regdate, 'YYYY-MM-DD HH24:MI:SS') as dbday "
 			+ "FROM gymReserve gr, gym g "
-			+ "WHERE gr.gno=g.gno "
+			+ "WHERE gr.gno=g.no "
 			+ "ORDER BY rno DESC")
 	public List<GymReserveVO> gymReserveAdminpageData();
 	
@@ -56,13 +56,13 @@ public interface GymReserveMapper {
 	public void gymReserveOk(int rno);
 	
 	@Results({
-		@Result(column = "name", property = "gvo.name"),
+		@Result(column = "title", property = "gvo.title"),
 		@Result(column = "poster", property = "gvo.poster")
 	})
-	@Select("SELECT rno, gr.gno, userId, name, poster, rDate, rTime, "
+	@Select("SELECT rno, gr.gno, userId, title, poster, rDate, rTime, "
 			+ "reserve_ok, TO_CHAR(regdate, 'YYYY-MM-DD HH24:MI:SS') as dbday "
 			+ "FROM gymReserve gr, gym g "
-			+ "WHERE gr.gno=g.gno "
+			+ "WHERE gr.gno=g.no "
 			+ "AND rno=#{rno}")
 	public GymReserveVO gymReserveInfoData(int rno);
 }
